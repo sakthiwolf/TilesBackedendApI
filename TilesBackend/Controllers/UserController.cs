@@ -1,93 +1,163 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tiles.Core.DTO;
+using Tiles.Core.DTO.UserDto;
 using Tiles.Core.ServiceContracts.UserManagement.Application.Interfaces;
 
 namespace TilesBackendApI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UserController : ControllerBase
-    {
-        private readonly IUserService _userService;
-
-        public UserController(IUserService userService)
+  
+    
+        public class UserController : ControllerBase
         {
-            _userService = userService;
+            private readonly IUserService _userService;
+
+            // Constructor to inject the user service dependency
+            public UserController(IUserService userService)
+            {
+                _userService = userService;
+            }
+
+            // Register a new user
+            [HttpPost("register")]
+            public async Task<IActionResult> RegisterUser([FromBody] UserRequestDto dto)
+            {
+                var result = await _userService.RegisterUserAsync(dto);
+
+                // Check if registration was successful, return appropriate response
+                if (!result.Success)
+                    return BadRequest(new { msg = result.Message });
+
+                return Created("", new { msg = result.Message });
+            }
+
+            // Get a list of users with pagination and optional search filter
+            [HttpGet]
+            public async Task<IActionResult> GetUsers([FromQuery] string search = "", [FromQuery] int pageNo = 1, [FromQuery] int rowsPerPage = 10)
+            {
+                var result = await _userService.GetUsersAsync(search, pageNo, rowsPerPage);
+                return Ok(result);
+            }
+
+            // Get user by ID
+            [HttpGet("{id}")]
+            public async Task<IActionResult> GetUserById(Guid id)
+            {
+                var user = await _userService.GetUserByIdAsync(id);
+
+                // Return 404 if user not found
+                if (user == null)
+                    return NotFound(new { msg = "User not found" });
+
+                return Ok(user);
+            }
+
+            // Edit an existing user by their ID
+            [HttpPut("{id}")]
+            public async Task<IActionResult> EditUser(Guid id, [FromBody] UserRequestDto dto)
+            {
+                var result = await _userService.UpdateUserAsync(id, dto);
+
+                // Return 404 if user update failed
+                if (!result.Success)
+                    return NotFound(new { msg = result.Message });
+
+                return Ok(new { msg = result.Message });
+            }
+
+            // Delete a user by their ID
+            [HttpDelete("{id}")]
+            public async Task<IActionResult> DeleteUser(Guid id)
+            {
+                var result = await _userService.DeleteUserAsync(id);
+
+                // Return 404 if deletion failed
+                if (!result.Success)
+                    return NotFound(new { msg = result.Message });
+
+                return Ok(new { msg = result.Message });
+            }
+
+            // User login with email and password
+            [HttpPost("login")]
+            public async Task<IActionResult> Login([FromBody] LoginDto dto)
+            {
+                var result = await _userService.LoginAsync(dto);
+
+                // Return Unauthorized if login fails
+                if (!result.Success)
+                    return Unauthorized(new { msg = result.Message });
+
+                return Ok(result.Data);
+            }
+
+            // Update user password
+            [HttpPut("update-password")]
+            public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto dto)
+            {
+                var result = await _userService.UpdatePasswordAsync(dto);
+
+                // Return BadRequest if password update fails
+                if (!result.Success)
+                    return BadRequest(new { msg = result.Message });
+
+                return Ok(new { msg = result.Message });
+            }
+
+            // Forgot password - sends an OTP to the user's email
+            [HttpPost("forgot-password")]
+            public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
+            {
+                var result = await _userService.ForgotPasswordAsync(dto.Email);
+
+                // Return NotFound if OTP sending fails
+                if (!result.Success)
+                    return NotFound(new { msg = result.Message });
+
+                return Ok(new { msg = "OTP sent successfully" });
+            }
+
+            // Verify OTP sent for password reset
+            [HttpPost("verify-otp")]
+            public async Task<IActionResult> VerifyOtp([FromBody] OtpVerifyDto dto)
+            {
+                var result = await _userService.VerifyOtpAsync(dto.Email, dto.Otp);
+
+                // Return BadRequest if OTP verification fails
+                if (!result.Success)
+                    return BadRequest(new { msg = result.Message });
+
+                return Ok(new { msg = "OTP verified successfully" });
+            }
+
+           // Fix for CS8604: Possible null reference argument for parameter 's' in 'int int.Parse(string s)'.
+           // Ensure that the string being passed to int.Parse is not null by using null-coalescing operator or null check.
+
+          [HttpGet("parse-example")]
+           public IActionResult ParseExample([FromQuery] string? input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return BadRequest(new { msg = "Input cannot be null or empty" });
+            }
+
+            int parsedValue;
+            try
+            {
+                parsedValue = int.Parse(input);
+            }
+            catch (FormatException)
+            {
+                return BadRequest(new { msg = "Input is not a valid integer" });
+            }
+
+            return Ok(new { parsedValue });
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> RegisterUser([FromBody] UserRequestDto dto)
-        {
-            var result = await _userService.RegisterUserAsync(dto);
-            if (!result.Success)
-                return BadRequest(new { msg = result.Message });
 
-            return Created("", new { msg = result.Message });
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUsers([FromQuery] string search = "", [FromQuery] int pageNo = 1, [FromQuery] int rowsPerPage = 10)
-        {
-            var result = await _userService.GetUsersAsync(search, pageNo, rowsPerPage);
-            return Ok(result);
-        }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(Guid id)
-        {
-            var user = await _userService.GetUserByIdAsync(id);
-            if (user == null)
-                return NotFound(new { msg = "User not found" });
-
-            return Ok(user);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> EditUser(Guid id, [FromBody] UserRequestDto dto)
-        {
-            var result = await _userService.UpdateUserAsync(id, dto);
-            if (!result.Success)
-                return NotFound(new { msg = result.Message });
-
-            return Ok(new { msg = result.Message });
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
-        {
-            var result = await _userService.DeleteUserAsync(id);
-            if (!result.Success)
-                return NotFound(new { msg = result.Message });
-
-            return Ok(new { msg = result.Message });
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto dto)
-        {
-            var result = await _userService.LoginAsync(dto);
-            if (!result.Success)
-                return Unauthorized(new { msg = result.Message });
-
-            return Ok(result.Data);
-        }
-
-        [HttpPost("update-password")]
-        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordDto dto)
-        {
-            var result = await _userService.UpdatePasswordAsync(dto);
-            if (!result.Success)
-                return BadRequest(new { msg = result.Message });
-
-            return Ok(new { msg = result.Message });
-        }
-
-        [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromQuery] string email)
-        {
-            var result = await _userService.ForgotPasswordAsync(email);
-            return Ok(result);
-        }
 
         //[HttpPost("forgot-password")]
         //public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto dto)
@@ -131,5 +201,5 @@ namespace TilesBackendApI.Controllers
 
 
     }
-}
+
 

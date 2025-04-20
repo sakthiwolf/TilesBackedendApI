@@ -1,4 +1,4 @@
-﻿using Tiles.Core.DTO;
+﻿using Tiles.Core.DTO.ProductDto;
 
 namespace Tiles.Core.ServiceContracts
 {

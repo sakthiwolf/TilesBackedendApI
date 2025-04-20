@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tiles.Core.DTO
+namespace Tiles.Core.DTO.UserDto
 {
-    public class LoginDto
+    public class UpdatePasswordDto
     {
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = string.Empty;
     }
 
 }
