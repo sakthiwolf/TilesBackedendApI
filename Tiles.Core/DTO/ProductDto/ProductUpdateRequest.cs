@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tiles.Core.DTO
+namespace Tiles.Core.DTO.ProductDto
 {
-    public class ProductResponse
+    public class ProductUpdateRequest
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
     }

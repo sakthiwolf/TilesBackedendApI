@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tiles.Core.DTO
+namespace Tiles.Core.DTO.UserDto
 {
     public class UserResponseDto
     {

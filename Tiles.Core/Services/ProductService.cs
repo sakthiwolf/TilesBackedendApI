@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tiles.Core.Domain.Entites;
 using Tiles.Core.Domain.RepositroyContracts;
-using Tiles.Core.DTO;
+using Tiles.Core.DTO.ProductDto;
 using Tiles.Core.ServiceContracts;
 
 namespace Tiles.Core.Services

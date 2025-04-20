@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tiles.Core.DTO;
 using Tiles.Core.ServiceContracts;
 using Microsoft.Extensions.Logging;
+using Tiles.Core.DTO.ProductDto;
 
 namespace TilesBackend.Controllers
 {

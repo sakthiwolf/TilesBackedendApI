@@ -1,15 +1,14 @@
-
 # Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy csproj and restore dependencies
-COPY *.csproj ./
-RUN dotnet restore
+# Copy the .csproj and restore dependencies
+COPY TilesApi/TilesApi.csproj TilesApi/
+RUN dotnet restore TilesApi/TilesApi.csproj
 
 # Copy the full source code and publish
-COPY . ./
-RUN dotnet publish -c Release -o /app/publish
+COPY . .
+RUN dotnet publish TilesApi/TilesApi.csproj -c Release -o /app/publish
 
 # Stage 2: Production image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
@@ -20,4 +19,4 @@ COPY --from=build /app/publish .
 EXPOSE 80
 
 # Run the application
-ENTRYPOINT ["dotnet", "MyWebApi.dll"]
+ENTRYPOINT ["dotnet", "TilesApi.dll"]
