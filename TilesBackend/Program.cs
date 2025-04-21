@@ -49,12 +49,12 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline for both environments (dev and prod)
+// Enable Swagger UI for all environments (no versioning)
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-    c.RoutePrefix = string.Empty; // To serve Swagger at the root URL (empty prefix)
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", ""); // No label for API version
+    c.RoutePrefix = string.Empty; // To serve Swagger UI at the root URL
 });
 
 app.UseHttpsRedirection();
