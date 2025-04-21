@@ -53,7 +53,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", ""); // No label for API version
+    c.SwaggerEndpoint("/swagger/swagger.json", ""); // No label for API version
     c.RoutePrefix = string.Empty; // To serve Swagger UI at the root URL
 });
 
