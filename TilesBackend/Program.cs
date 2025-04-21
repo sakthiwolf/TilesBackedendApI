@@ -49,16 +49,13 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+// Configure the HTTP request pipeline for both environments (dev and prod)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
-        c.RoutePrefix = string.Empty; // To serve Swagger at the root URL
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    c.RoutePrefix = string.Empty; // To serve Swagger at the root URL (empty prefix)
+});
 
 app.UseHttpsRedirection();
 app.UseCors("AllowReactApp"); // Enable CORS for React app
