@@ -1,13 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Tiles.Core.ServiceContracts;
 using Tiles.Core.Services;
-
 using Tiles.Infrastructure.Repositories;
-
 using Tiles.Core.ServiceContracts.UserManagement.Application.Interfaces;
 using Tiles.Core.Domain.RepositroyContracts;
-
 using Tiles.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,10 +53,16 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+        c.RoutePrefix = string.Empty; // To serve Swagger at the root URL
+    });
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowReactApp"); // Enable CORS for React app
+
 app.UseAuthorization();
 
 app.MapControllers();
