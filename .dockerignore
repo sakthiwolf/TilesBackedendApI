@@ -1,7 +1,6 @@
 **/.classpath
 **/.dockerignore
 **/.env
-**/.git
 **/.gitignore
 **/.project
 **/.settings
@@ -15,7 +14,8 @@
 **/bin
 **/charts
 **/docker-compose*
-**/Dockerfile*
+# 
+# **/Dockerfile* 
 **/node_modules
 **/npm-debug.log
 **/obj
@@ -23,8 +23,6 @@
 **/values.dev.yaml
 LICENSE
 README.md
-!**/.gitignore
-!.git/HEAD
-!.git/config
-!.git/packed-refs
-!.git/refs/heads/**
+
+# 👍 Allow Dockerfile to be sent to context
+!Dockerfile
